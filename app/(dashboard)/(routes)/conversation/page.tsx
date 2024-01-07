@@ -9,14 +9,13 @@ import { Form, FormControl, FormField, FormItem } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import axios from "axios"
-import { useRouter } from "next/navigation"
+import { useRouter } from "next/navigation";
 import { useState } from "react"
-import {  } from "openai";
-
+import { ChatCompletionMessageParam } from "openai/resources/chat";
 
 const ConversationPage = () => {
     const router = useRouter();
-    const [messages, setMessages] = useState<[]>([]);
+    const [messages, setMessages] = useState<ChatCompletionMessageParam[]>([]);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -30,8 +29,19 @@ const ConversationPage = () => {
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         console.log(values)
         try {
+            const userMessage: ChatCompletionMessageParam = {
+                role: "user",
+                content: values.prompt,
+            }
+            const newMessage = [...messages, userMessage]
+            const response = await axios.post("/api/conversation", {
+                messages: newMessage,
+            })
+            setMessages((current) => [...current, userMessage, response.data]);
+            form.reset();
 
         } catch (error: any) {
+            //TODO OPEN PRO MODAL
             console.log(error)
         } finally {
             router.refresh();
@@ -78,7 +88,13 @@ const ConversationPage = () => {
                     </Form>
                 </div>
                 <div className="space-y-4 mt-4">
-                    Messages Content
+                    <div className="flex flex-col-reverse gap-y-4">
+                        {messages.map((message, index) => (
+                            <div key={index.toString()}>
+                                {String(message.content)}
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
         </div>
