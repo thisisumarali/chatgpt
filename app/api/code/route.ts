@@ -5,7 +5,15 @@ import OpenAI from "openai";
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY
 })
-
+interface ChatCompletionRequestMessage {
+    role: 'user' | 'assistant' | 'system';
+    content: string;
+    name?: string;
+}
+const instructionMessage: ChatCompletionRequestMessage = {
+    role: "system",
+    content: "Your are a code generator. You must answer only in markdown code snippets. Use code comments for explainations."
+}
 export async function POST(
     req: Request
 ) {
@@ -25,13 +33,13 @@ export async function POST(
         }
         const response = await openai.chat.completions.create({
             model: "gpt-3.5-turbo",
-            messages
+            messages:[instructionMessage, ...messages]
         });
 
         return NextResponse.json(response.choices[0].message)
 
     } catch (error) {
-        console.log("CONVERSATION_ERROR", error);
+        console.log("CODE_ERROR", error);
         return new NextResponse("Internal error", { status: 500 })
     }
 }
