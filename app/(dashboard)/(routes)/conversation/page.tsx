@@ -1,7 +1,7 @@
 "use client"
 import * as z from "zod"
 import Heading from "@/components/heading"
-import { MessageSquare } from "lucide-react"
+import { MessageCircleQuestionIcon, MessageSquare, MessageSquareDot } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { formSchema } from "./constants"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -60,10 +60,10 @@ const ConversationPage = () => {
         <div>
             <Heading
                 title="Conversation"
-                description="Our most advanced conversation model."
-                icon={MessageSquare}
-                iconColor="text-violet-500"
-                bgColor="bg-violet-500/10"
+                description="Conversation model."
+                icon={MessageCircleQuestionIcon}
+                iconColor="text-primary"
+                bgColor="bg-primary/10"
             />
             <div className="px-4 lg:px-8">
                 <div>
@@ -97,7 +97,7 @@ const ConversationPage = () => {
                 </div>
                 <div className="space-y-4 mt-4">
                     {isLoading && (
-                        <div className="p-8 rounded-lg w-full flex items-center justify-center bg-muted">
+                        <div className="p-8 rounded-lg w-full flex items-center justify-center bg-secondary">
                             <Loader />
                         </div>
                     )}
@@ -109,7 +109,7 @@ const ConversationPage = () => {
                             <div key={message.content}
                                 className={cn(
                                     "p-8 w-full flex items-start gap-x-8 rounded-lg",
-                                    message.role === "user" ? "bg-white border-black/10 " : "bg-muted"
+                                    message.role === "user" ? "bg-muted border-black/10 " : "bg-muted"
                                 )}
                             >
                                 {message.role === "user" ? <UserAvatar /> :

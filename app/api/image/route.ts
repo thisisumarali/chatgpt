@@ -1,8 +1,8 @@
 import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
-import OpenAI from "openai";
+import Openai from "openai";
 
-const openai = new OpenAI({
+const openai = new Openai({
     apiKey: process.env.OPENAI_API_KEY
 })
 
@@ -34,7 +34,8 @@ export async function POST(
             n: parseInt(amount, 10),
             size: resolution,
         })
-        return NextResponse.json(response.data[0].url)
+
+        return NextResponse.json(response.data)
 
     } catch (error) {
         console.log("Image_ERROR", error);
